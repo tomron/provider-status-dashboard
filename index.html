@@ -278,6 +278,12 @@
     const SVG_SENDGRID = "M.8 24h13.6c.88 0 1.6-.72 1.6-1.6v-4.8c0-.88-.72-1.6-1.6-1.6H9.6c-.88 0-1.6-.72-1.6-1.6V9.6C8 8.72 7.28 8 6.4 8H1.6C.72 8 0 8.72 0 9.6v13.6c0 .44.36.8.8.8zM23.2 0H9.6C8.72 0 8 .72 8 1.6v4.8C8 7.28 8.72 8 9.6 8h4.8c.88 0 1.6.72 1.6 1.6v4.8c0 .88.72 1.6 1.6 1.6h4.8c.88 0 1.6-.72 1.6-1.6V.8c0-.44-.36-.8-.8-.8Z";
     const SVG_TWILIO = "M12 0C5.381-.008.008 5.352 0 11.971V12c0 6.64 5.359 12 12 12 6.64 0 12-5.36 12-12 0-6.641-5.36-12-12-12zm0 20.801c-4.846.015-8.786-3.904-8.801-8.75V12c-.014-4.846 3.904-8.786 8.75-8.801H12c4.847-.014 8.786 3.904 8.801 8.75V12c.015 4.847-3.904 8.786-8.75 8.801H12zm5.44-11.76c0 1.359-1.12 2.479-2.481 2.479-1.366-.007-2.472-1.113-2.479-2.479 0-1.361 1.12-2.481 2.479-2.481 1.361 0 2.481 1.12 2.481 2.481zm0 5.919c0 1.36-1.12 2.48-2.481 2.48-1.367-.008-2.473-1.114-2.479-2.48 0-1.359 1.12-2.479 2.479-2.479 1.361-.001 2.481 1.12 2.481 2.479zm-5.919 0c0 1.36-1.12 2.48-2.479 2.48-1.368-.007-2.475-1.113-2.481-2.48 0-1.359 1.12-2.479 2.481-2.479 1.358-.001 2.479 1.12 2.479 2.479zm0-5.919c0 1.359-1.12 2.479-2.479 2.479-1.367-.007-2.475-1.112-2.481-2.479 0-1.361 1.12-2.481 2.481-2.481 1.358 0 2.479 1.12 2.479 2.481z";
     const SVG_ASANA = "M18.78 12.653c-2.882 0-5.22 2.336-5.22 5.22s2.338 5.22 5.22 5.22 5.22-2.34 5.22-5.22-2.336-5.22-5.22-5.22zm-13.56 0c-2.88 0-5.22 2.337-5.22 5.22s2.338 5.22 5.22 5.22 5.22-2.338 5.22-5.22-2.336-5.22-5.22-5.22zm12-6.525c0 2.883-2.337 5.22-5.22 5.22-2.882 0-5.22-2.337-5.22-5.22 0-2.88 2.338-5.22 5.22-5.22 2.883 0 5.22 2.34 5.22 5.22z";
+    // Coralogix — two-path mark, viewBox 0 0 22 22
+    const SVG_CORALOGIX_PATHS = [
+      "M4.73961 9.10443C4.59208 9.10624 4.44999 9.10408 4.31421 9.09834C4.45818 9.09834 4.59997 9.10039 4.73961 9.10443C7.75261 9.0675 13.0318 7.37357 13.074 0.659329C13.074 0.632008 13.074 0.604938 13.0743 0.578125C13.0743 0.605274 13.0742 0.632342 13.074 0.659329C13.0818 3.47554 14.8016 8.95016 21.682 8.95016C18.9072 8.97447 13.4005 10.6026 13.2307 16.8746C13.2317 16.9776 13.2303 17.0775 13.2266 17.174C13.2266 17.0731 13.228 16.9733 13.2307 16.8746C13.2038 14.1593 11.495 9.30013 4.73961 9.10443Z",
+      "M0.611469 17.292C0.536067 17.2929 0.463441 17.2918 0.394043 17.2889C0.46763 17.2889 0.5401 17.2899 0.611469 17.292C2.15145 17.2731 4.8497 16.4064 4.87128 12.9712C4.87124 12.9573 4.87129 12.9434 4.87141 12.9297C4.87141 12.9436 4.87137 12.9574 4.87128 12.9712C4.87524 14.4121 5.75428 17.2131 9.27092 17.2131C7.85268 17.2255 5.03817 18.0585 4.95134 21.2674C4.95186 21.3201 4.95114 21.3712 4.94928 21.4206C4.94928 21.369 4.94997 21.3179 4.95134 21.2674C4.93762 19.8782 4.06422 17.3921 0.611469 17.292Z",
+    ];
+    const SVG_VIMEO = "M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2898 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.378-1.8809 1.132l-1.129-1.457a315.06 315.06 0 003.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4929 4.7969z";
     // Monday.com — three colored dots (brand mark), custom SVG
     const SVG_MONDAY_DOTS = [
       { cx: 3,    r: 3, fill: "#FF3D57" },
@@ -427,6 +433,13 @@
         logo: SVG_DATADOG,
       },
       {
+        name: "Coralogix",
+        category: "devops",
+        apiUrl: "https://status.coralogix.com/api/v2/status.json",
+        statusPage: "https://status.coralogix.com/",
+        logo: null, // uses custom multi-path logo
+      },
+      {
         name: "Sentry",
         category: "devops",
         apiUrl: "https://status.sentry.io/api/v2/status.json",
@@ -498,6 +511,13 @@
         logo: SVG_CLOUDINARY,
       },
       {
+        name: "Vimeo",
+        category: "devtools",
+        apiUrl: "https://www.vimeostatus.com/api/v2/status.json",
+        statusPage: "https://www.vimeostatus.com/",
+        logo: SVG_VIMEO,
+      },
+      {
         name: "SendGrid",
         category: "devtools",
         apiUrl: "https://status.sendgrid.com/api/v2/status.json",
@@ -522,8 +542,9 @@
       {
         name: "ClickUp",
         category: "pm",
-        apiUrl: "https://status.clickup.com/api/v2/status.json",
+        apiUrl: "https://api.status.io/1.0/status/5b6e0963c662144d00913a09",
         statusPage: "https://status.clickup.com/",
+        parser: "statusio",
         logo: SVG_CLICKUP,
       },
       {
@@ -595,6 +616,16 @@
         return { indicator: "major", description: "Active incident" };
       }
 
+      if (provider.parser === "statusio") {
+        const data = await res.json();
+        const code = data.result?.status_overall?.status_code ?? 100;
+        const status = data.result?.status_overall?.status ?? "Operational";
+        if (code < 200) return { indicator: "none", description: "All Systems Operational" };
+        if (code < 400) return { indicator: "minor", description: status };
+        if (code < 500) return { indicator: "major", description: status };
+        return { indicator: "critical", description: status };
+      }
+
       if (provider.parser === "aws") {
         const text = await res.text();
         const xml = new DOMParser().parseFromString(text, "text/xml");
@@ -648,6 +679,14 @@
           circle.setAttribute("r", dot.r);
           circle.setAttribute("fill", dot.fill);
           svg.appendChild(circle);
+        }
+      } else if (provider.name === "Coralogix") {
+        svg.setAttribute("viewBox", "0 0 22 22");
+        svg.setAttribute("fill", "none");
+        for (const d of SVG_CORALOGIX_PATHS) {
+          const path = document.createElementNS(svgNS, "path");
+          path.setAttribute("d", d);
+          svg.appendChild(path);
         }
       } else {
         const path = document.createElementNS(svgNS, "path");
