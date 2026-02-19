@@ -142,6 +142,12 @@
         apiUrl: "https://status.openai.com/api/v2/status.json",
         statusPage: "https://status.openai.com/",
       },
+      {
+        name: "Google Cloud",
+        apiUrl: "https://status.cloud.google.com/incidents.json",
+        statusPage: "https://status.cloud.google.com/",
+        parser: "gcp",
+      },
     ];
 
     function indicatorToClass(indicator) {
@@ -155,6 +161,17 @@
       const res = await fetch(provider.apiUrl);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+
+      if (provider.parser === "gcp") {
+        const active = data.filter((i) => !i.end);
+        if (active.length === 0) return { indicator: "none", description: "All Systems Operational" };
+        const worst = active.find((i) => i.status_impact === "SERVICE_OUTAGE") ||
+                      active.find((i) => i.status_impact === "SERVICE_DISRUPTION") ||
+                      active[0];
+        const indicator = worst.status_impact === "SERVICE_OUTAGE" ? "major" : "minor";
+        return { indicator, description: worst.external_desc };
+      }
+
       return { indicator: data.status.indicator, description: data.status.description };
     }
 
