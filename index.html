@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Provider Status Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #6e6e73;
+      margin-top: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    #cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      border-left: 5px solid #ccc;
+      transition: border-color 0.3s;
+    }
+
+    .card.green  { border-left-color: #34c759; }
+    .card.yellow { border-left-color: #ff9f0a; }
+    .card.red    { border-left-color: #ff3b30; }
+    .card.gray   { border-left-color: #aeaeb2; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-name {
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ccc;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .card.green  .status-dot { background: #34c759; }
+    .card.yellow .status-dot { background: #ff9f0a; }
+    .card.red    .status-dot { background: #ff3b30; }
+    .card.gray   .status-dot { background: #aeaeb2; }
+
+    .card-description {
+      font-size: 0.875rem;
+      color: #6e6e73;
+      flex: 1;
+    }
+
+    .card-link {
+      font-size: 0.8rem;
+      color: #0071e3;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      align-self: flex-start;
+    }
+    .card-link:hover { text-decoration: underline; }
+    .card-link::after { content: "↗"; font-size: 0.75rem; }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: #aeaeb2;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Provider Status Dashboard</h1>
+    <p>Live status for cloud and AI providers</p>
+  </header>
+
+  <div id="cards"></div>
+
+  <footer>
+    Last updated: <span id="last-updated">—</span>
+  </footer>
+
+  <script>
+    const PROVIDERS = [
+      {
+        name: "Twitter / X",
+        statusPage: "https://docs.x.com/status",
+        noApi: true,
+      },
+      {
+        name: "GitHub",
+        apiUrl: "https://www.githubstatus.com/api/v2/status.json",
+        statusPage: "https://www.githubstatus.com/",
+      },
+      {
+        name: "Cloudflare",
+        apiUrl: "https://www.cloudflarestatus.com/api/v2/status.json",
+        statusPage: "https://www.cloudflarestatus.com/",
+      },
+      {
+        name: "Claude (Anthropic)",
+        apiUrl: "https://status.claude.com/api/v2/status.json",
+        statusPage: "https://status.claude.com/",
+      },
+      {
+        name: "OpenAI",
+        apiUrl: "https://status.openai.com/api/v2/status.json",
+        statusPage: "https://status.openai.com/",
+      },
+    ];
+
+    function indicatorToClass(indicator) {
+      if (indicator === "none") return "green";
+      if (indicator === "minor") return "yellow";
+      if (indicator === "major" || indicator === "critical") return "red";
+      return "gray";
+    }
+
+    async function fetchStatus(provider) {
+      const res = await fetch(provider.apiUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return { indicator: data.status.indicator, description: data.status.description };
+    }
+
+    function renderCard(provider, colorClass, description) {
+      const card = document.getElementById(`card-${provider.name}`);
+      card.className = `card ${colorClass}`;
+      card.querySelector(".card-description").textContent = description;
+    }
+
+    function buildCard(provider) {
+      const card = document.createElement("div");
+      card.className = "card gray";
+      card.id = `card-${provider.name}`;
+
+      const header = document.createElement("div");
+      header.className = "card-header";
+
+      const name = document.createElement("span");
+      name.className = "card-name";
+      name.textContent = provider.name;
+
+      const dot = document.createElement("span");
+      dot.className = "status-dot";
+
+      header.appendChild(name);
+      header.appendChild(dot);
+
+      const desc = document.createElement("div");
+      desc.className = "card-description";
+      desc.textContent = provider.noApi ? "Manual check required" : "Loading\u2026";
+
+      const link = document.createElement("a");
+      link.className = "card-link";
+      link.href = provider.statusPage;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "Check status";
+
+      card.appendChild(header);
+      card.appendChild(desc);
+      card.appendChild(link);
+
+      return card;
+    }
+
+    function buildCards() {
+      const container = document.getElementById("cards");
+      for (const p of PROVIDERS) {
+        container.appendChild(buildCard(p));
+      }
+    }
+
+    async function refreshAll() {
+      const fetches = PROVIDERS.map((p) => {
+        if (p.noApi) return Promise.resolve({ noApi: true });
+        return fetchStatus(p)
+          .then((r) => ({ ok: true, ...r }))
+          .catch(() => ({ ok: false }));
+      });
+
+      const results = await Promise.allSettled(fetches);
+
+      PROVIDERS.forEach((p, i) => {
+        if (p.noApi) return;
+        const res = results[i];
+        if (res.status === "fulfilled" && res.value.ok) {
+          renderCard(p, indicatorToClass(res.value.indicator), res.value.description);
+        } else {
+          renderCard(p, "gray", "Could not fetch status");
+        }
+      });
+
+      const now = new Date();
+      document.getElementById("last-updated").textContent =
+        now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    }
+
+    buildCards();
+    refreshAll();
+    setInterval(refreshAll, 60000);
+  </script>
+</body>
+</html>
