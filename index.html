@@ -549,6 +549,22 @@
       },
     ];
 
+    function slugify(name) {
+      return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    function parseProviderFilter() {
+      const param = new URLSearchParams(window.location.search).get("providers");
+      if (!param) return null;
+      const slugs = param.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+      return slugs.length ? new Set(slugs) : null;
+    }
+
+    const _filter = parseProviderFilter();
+    const activeProviders = _filter
+      ? PROVIDERS.filter((p) => _filter.has(slugify(p.name)))
+      : PROVIDERS;
+
     function indicatorToClass(indicator) {
       if (indicator === "none") return "green";
       if (indicator === "minor") return "yellow";
@@ -690,7 +706,7 @@
       const container = document.getElementById("categories-container");
 
       for (const cat of CATEGORIES) {
-        const providers = PROVIDERS.filter((p) => p.category === cat.key);
+        const providers = activeProviders.filter((p) => p.category === cat.key);
         if (providers.length === 0) continue;
 
         const section = document.createElement("section");
@@ -723,7 +739,7 @@
     }
 
     async function refreshAll() {
-      const fetches = PROVIDERS.map((p) =>
+      const fetches = activeProviders.map((p) =>
         fetchStatus(p)
           .then((r) => ({ ok: true, ...r }))
           .catch(() => ({ ok: false }))
@@ -731,7 +747,7 @@
 
       const results = await Promise.allSettled(fetches);
 
-      PROVIDERS.forEach((p, i) => {
+      activeProviders.forEach((p, i) => {
         const res = results[i];
         if (res.status === "fulfilled" && res.value.ok) {
           renderCard(p, indicatorToClass(res.value.indicator), res.value.description);
