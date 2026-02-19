@@ -522,8 +522,9 @@
       {
         name: "ClickUp",
         category: "pm",
-        apiUrl: "https://status.clickup.com/api/v2/status.json",
+        apiUrl: "https://api.status.io/1.0/status/5b6e0963c662144d00913a09",
         statusPage: "https://status.clickup.com/",
+        parser: "statusio",
         logo: SVG_CLICKUP,
       },
       {
@@ -593,6 +594,16 @@
         if (data.status === "ok") return { indicator: "none", description: "All Systems Operational" };
         if (data.status === "warning") return { indicator: "minor", description: "Degraded performance" };
         return { indicator: "major", description: "Active incident" };
+      }
+
+      if (provider.parser === "statusio") {
+        const data = await res.json();
+        const code = data.result?.status_overall?.status_code ?? 100;
+        const status = data.result?.status_overall?.status ?? "Operational";
+        if (code < 200) return { indicator: "none", description: "All Systems Operational" };
+        if (code < 400) return { indicator: "minor", description: status };
+        if (code < 500) return { indicator: "major", description: status };
+        return { indicator: "critical", description: status };
       }
 
       if (provider.parser === "aws") {
