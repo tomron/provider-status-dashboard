@@ -371,9 +371,10 @@
       {
         name: "Hugging Face",
         category: "llm",
-        apiUrl: "https://status.huggingface.co/api/v2/status.json",
+        apiUrl: "https://status.huggingface.co/overview",
         statusPage: "https://status.huggingface.co/",
         logo: SVG_HUGGINGFACE,
+        parser: "betterstack",
       },
       {
         name: "Groq",
@@ -642,6 +643,16 @@
         if (s === "up") return { indicator: "none", description: "All services online" };
         if (s === "degraded") return { indicator: "minor", description: data.message || "Degraded performance" };
         return { indicator: "major", description: data.message || "Service disruption" };
+      }
+
+      if (provider.parser === "betterstack") {
+        const html = await res.text();
+        const match = html.match(/<h1[^>]*heading-large[^>]*>(.*?)<\/h1>/);
+        const text = match ? match[1].trim().toLowerCase() : "";
+        if (text.includes("online") || text.includes("operational")) return { indicator: "none", description: "All services online" };
+        if (text.includes("disruption") || text.includes("outage")) return { indicator: "major", description: "Service disruption" };
+        if (text.includes("issue") || text.includes("degraded") || text.includes("partial")) return { indicator: "minor", description: "Degraded performance" };
+        return { indicator: "minor", description: text || "Degraded performance" };
       }
 
       if (provider.parser === "aws") {
