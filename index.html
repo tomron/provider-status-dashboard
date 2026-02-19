@@ -478,9 +478,10 @@
       {
         name: "Stripe",
         category: "devtools",
-        apiUrl: "https://status.stripe.com/api/v2/status.json",
+        apiUrl: "https://status.stripe.com/current",
         statusPage: "https://status.stripe.com/",
         logo: SVG_STRIPE,
+        parser: "stripe",
       },
       {
         name: "Linear",
@@ -624,6 +625,14 @@
         if (code < 400) return { indicator: "minor", description: status };
         if (code < 500) return { indicator: "major", description: status };
         return { indicator: "critical", description: status };
+      }
+
+      if (provider.parser === "stripe") {
+        const data = await res.json();
+        const s = data.largestatus;
+        if (s === "up") return { indicator: "none", description: "All services online" };
+        if (s === "degraded") return { indicator: "minor", description: data.message || "Degraded performance" };
+        return { indicator: "major", description: data.message || "Service disruption" };
       }
 
       if (provider.parser === "aws") {
