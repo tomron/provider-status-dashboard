@@ -123,11 +123,6 @@
   <script>
     const PROVIDERS = [
       {
-        name: "Twitter / X",
-        statusPage: "https://docs.x.com/status",
-        noApi: true,
-      },
-      {
         name: "GitHub",
         apiUrl: "https://www.githubstatus.com/api/v2/status.json",
         statusPage: "https://www.githubstatus.com/",
@@ -189,7 +184,7 @@
 
       const desc = document.createElement("div");
       desc.className = "card-description";
-      desc.textContent = provider.noApi ? "Manual check required" : "Loading\u2026";
+      desc.textContent = "Loading\u2026";
 
       const link = document.createElement("a");
       link.className = "card-link";
@@ -213,17 +208,15 @@
     }
 
     async function refreshAll() {
-      const fetches = PROVIDERS.map((p) => {
-        if (p.noApi) return Promise.resolve({ noApi: true });
-        return fetchStatus(p)
+      const fetches = PROVIDERS.map((p) =>
+        fetchStatus(p)
           .then((r) => ({ ok: true, ...r }))
-          .catch(() => ({ ok: false }));
-      });
+          .catch(() => ({ ok: false }))
+      );
 
       const results = await Promise.allSettled(fetches);
 
       PROVIDERS.forEach((p, i) => {
-        if (p.noApi) return;
         const res = results[i];
         if (res.status === "fulfilled" && res.value.ok) {
           renderCard(p, indicatorToClass(res.value.indicator), res.value.description);
